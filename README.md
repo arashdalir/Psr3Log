@@ -1,6 +1,6 @@
 # Psr3Log
 
-`ArashDalir\Psr3Log` is a [PSR3](http://www.php-fig.org/psr/psr-3/) implementation,
+`ArashDalir/Psr3Log` is a [PSR3](http://www.php-fig.org/psr/psr-3/) implementation,
 which sending log according [RFC 5424](https://tools.ietf.org/html/rfc5424).
 This library forks the implementation of UDP-Based SysLog library implemented as [lvht\updlog](https://github.com/lvht/udplog), generalises it and allows further extension of the base system.
 
@@ -8,22 +8,26 @@ This library forks the implementation of UDP-Based SysLog library implemented as
 
 Use following command to add the repository to your project:
 
-	composer require ArashDalir/SysLog
+	composer require ArashDalir/SysLog:dev-master
 
 Or add following line to your composer.json:
 
 ```json
 {
   "require": {
-     "ArashDalir/SysLog": "dev-master"
+     "arashdalir/psr3log": "dev-master"
   }
 }
 ```
 ## Usage
-Currently, there is only one realization of Psr3Log Handlers for SysLog over UDP format. 
+Currently, there is only one realization of Psr3Log Handlers for SysLog over UDP format.
+
+
+### Usage on Windows:
+Please note that on Windows [only LOG_USER facility is allowed](http://php.net/manual/en/function.openlog.php). Using other facilities will throw an Exception of type `ArashDalir\Handler\SysLog\InvalidFacilityException`. 
 ```php
 <?php
-$log = new ArashDalir\Handler\SysLog('ip addr', 'port');
+$log = new ArashDalir\Handler\SysLog\SysLog('ip addr', 'port');
 $log->facility(LOG_KERN)
     ->hostname('foo.com')
     ->procid(8848)

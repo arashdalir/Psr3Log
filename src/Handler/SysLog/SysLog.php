@@ -6,7 +6,7 @@
  * Time: 15:27
  */
 
-namespace ArashDalir\Handler;
+namespace ArashDalir\Handler\SysLog;
 
 use ArashDalir\Foundation\Psr3Log;
 
@@ -30,18 +30,24 @@ class SysLog extends Psr3Log{
 		$this->sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 	}
 
+	/**
+	 * @param $facility
+	 *
+	 * @return $this
+	 * @throws Exception\InvalidFacilityException
+	 */
 	public function facility($facility)
 	{
-		if($facility < 0)
+		if($facility < 8)
 		{
 			$facility = 0;
 		}
-		if($facility > 23)
+
+		if (Facilities::isFacilityValid($facility))
 		{
-			$facility = 23;
+			$this->facility = $facility;
 		}
 
-		$this->facility = $facility;
 		return $this;
 	}
 
@@ -66,7 +72,7 @@ class SysLog extends Psr3Log{
 
 	function prepareLevel($level)
 	{
-		return ($this->facility << 3)|$this->$level;
+		return $this->facility|$this->$level;
 	}
 
 	function prepareLogExtra()
