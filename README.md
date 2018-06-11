@@ -1,30 +1,40 @@
-# udplog
+# Psr3Log
 
-`lvht/udplog` is a [PSR3](http://www.php-fig.org/psr/psr-3/) implementation,
+`ArashDalir\Psr3Log` is a [PSR3](http://www.php-fig.org/psr/psr-3/) implementation,
 which sending log according [RFC 5424](https://tools.ietf.org/html/rfc5424).
+This library forks the implementation of UDP-Based SysLog library implemented as [lvht\updlog](https://github.com/lvht/udplog), generalises it and allows further extension of the base system.
 
 ## Install
 
-	composer require lvht/udplog
+Use following command to add the repository to your project:
 
+	composer require ArashDalir/SysLog
+
+Or add following line to your composer.json:
+
+```json
+{
+  "require": {
+     "ArashDalir/SysLog": "dev-master"
+  }
+}
+```
 ## Usage
-
+Currently, there is only one realization of Psr3Log Handlers for SysLog over UDP format. 
 ```php
 <?php
-$log = new Lvht\Udplog('ip addr', 'port');
+$log = new ArashDalir\Handler\SysLog('ip addr', 'port');
 $log->facility(LOG_KERN)
     ->hostname('foo.com')
     ->procid(8848)
     ->msgid('demo')
     ->appname('php');
 
-$log->error('欢迎使用基于UDP的syslog协议发送日志！');
-$log->info('欢迎使用基于UDP的syslog协议发送日志！');
-$log->debug('欢迎使用基于UDP的syslog协议发送日志！');
-$log->emergency('欢迎使用基于UDP的syslog协议发送日志！');
+$log->error('UDP SysLog Error Test');
+$log->info('UDP SysLog Info Test');
+$log->debug('UDP SysLog Debug Test');
+$log->emergency('UDP SysLog Emergency Test');
 ```
 
 ## Status
-duplog implements PSR3, so the API is stable. And I want to make it v1.0.0.
-However, duplog does not support the [STRUCTURED-DATA](https://tools.ietf.org/html/rfc5424#section-6.3).
-We will add this support in the future if needed.
+SysLog extends Udplog, which implements PSR3, so the API is stable. As Udplog, Psr3Log doesn't support [STRUCTURED-DATA](https://tools.ietf.org/html/rfc5424#section-6.3). It will be added if [lvht\updlog](https://github.com/lvht/udplog) implements this feature.

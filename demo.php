@@ -1,7 +1,7 @@
 <?php
 include 'vendor/autoload.php';
 
-$log = new arashdalir\SysLog('127.0.0.1');
+$log = new arashdalir\Handler\SysLog('127.0.0.1');
 $log->facility(LOG_KERN)
     ->hostname('yourname.com')
     ->procid(8848)

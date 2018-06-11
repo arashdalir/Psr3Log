@@ -6,11 +6,11 @@
  * Time: 15:27
  */
 
-namespace ArashDalir;
+namespace ArashDalir\Handler;
 
-use ArashDalir\Foundation\AbstractLog;
+use ArashDalir\Foundation\Psr3Log;
 
-class SysLog extends AbstractLog{
+class SysLog extends Psr3Log{
 	protected $address;
 	protected $port;
 	protected $sock;

@@ -12,7 +12,7 @@ namespace ArashDalir\Foundation;
 
 use Psr\Log\LoggerInterface;
 
-abstract class AbstractLog implements LoggerInterface, ILog{
+abstract class Psr3Log implements LoggerInterface, ILog{
 	protected static $log_extra_format;
 
 	public static $formats = array();
