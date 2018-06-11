@@ -1,21 +1,22 @@
 {
-    "name": "lvht/udplog",
-    "authors": [
-        {
-            "name": "吕海涛",
-            "email": "git@lvht.net"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Lvht\\": "./src"
-        }
-    },
-    "provide": {
-        "psr/log-implementation": "1.0.0"
-    },
-    "require": {
-        "php": "^7.0",
-        "psr/log": "^1.0"
+  "name": "ArashDalir/SysLog",
+  "authors": [
+    {
+      "name": "Arash Dalir",
+      "email": "arash.dalir+github@gmail.com"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "arashdalir\\": "./src"
+    }
+  },
+  "provide": {
+    "psr/log-implementation": "1.0.0"
+  },
+  "require": {
+    "php": "^5.6",
+    "psr/log": "^1.0"
+  },
+  "description": "This is an extension of lvht\\updlog's SysLog over UDP implementation, meant to make the library extendable and also make it possible to use the same format for other log destinations."
 }

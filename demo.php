@@ -1,14 +1,14 @@
 <?php
 include 'vendor/autoload.php';
 
-$log = new Lvht\Udplog('192.168.64.5');
+$log = new arashdalir\SysLog('127.0.0.1');
 $log->facility(LOG_KERN)
-    ->hostname('baidu.com')
+    ->hostname('yourname.com')
     ->procid(8848)
     ->msgid('demo')
     ->appname('php');
 
-$log->error('欢迎使用基于UDP的syslog协议发送日志！');
-$log->info('欢迎使用基于UDP的syslog协议发送日志！');
-$log->debug('欢迎使用基于UDP的syslog协议发送日志！');
-$log->emergency('欢迎使用基于UDP的syslog协议发送日志！');
+$log->error('UDP SysLog Error Test');
+$log->info('UDP SysLog Info Test');
+$log->debug('UDP SysLog Debug Test');
+$log->emergency('UDP SysLog Emergency Test');
