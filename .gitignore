@@ -1,7 +1,7 @@
 composer.lock
 vendor
 .phpcd*
-/.idea
-/.idea/*
-/.idea/deployment.xml
-/.idea/vcs.xml
+.idea
+.idea/*
+.idea/deployment.xml
+.idea/vcs.xml
