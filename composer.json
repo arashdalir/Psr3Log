@@ -1,5 +1,5 @@
 {
-  "name": "arashdalir/psr3log",
+  "name": "arashdalir/php-psr3log",
   "authors": [
     {
       "name": "Arash Dalir",
@@ -8,11 +8,11 @@
   ],
   "autoload": {
     "psr-4": {
-      "arashdalir\\": "./src"
+      "ArashDalir\\": "./src"
     }
   },
   "provide": {
-    "psr/log-implementation": "2.0.0"
+    "psr/log-implementation": "1.0.0"
   },
   "require": {
     "php": "^5.6",

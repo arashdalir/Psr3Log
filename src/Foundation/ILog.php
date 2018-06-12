@@ -9,9 +9,10 @@
 namespace ArashDalir\Foundation;
 
 interface ILog{
+	/**
+	 * @param LogMessage $message
+	 *
+	 * @return mixed
+	 */
 	function send($message);
-	function prepareContext($context);
-	function prepareTimestamp($timestamp);
-	function prepareLevel($level);
-	function prepareLogExtra();
 }

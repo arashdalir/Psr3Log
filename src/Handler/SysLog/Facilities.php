@@ -8,7 +8,7 @@
 
 namespace arashdalir\Handler\SysLog;
 
-use arashdalir\Handler\SysLog\Exception\InvalidFacilityException;
+use ArashDalir\Handler\SysLog\Exception\InvalidFacilityException;
 
 final class Facilities{
 	static protected $facilities = array(
@@ -23,30 +23,48 @@ final class Facilities{
 		LOG_SYSLOG => 'log_syslog',
 		LOG_USER => 'log_user',
 		LOG_UUCP => 'log_uucp',
-		LOG_LOCAL0 => 'log_local0',
-		LOG_LOCAL1 => 'log_local1',
-		LOG_LOCAL2 => 'log_local2',
-		LOG_LOCAL3 => 'log_local3',
-		LOG_LOCAL4 => 'log_local4',
-		LOG_LOCAL5 => 'log_local5',
-		LOG_LOCAL6 => 'log_local6',
-		LOG_LOCAL7 => 'log_local7',
 	);
 
+	static function __callStatic($method, $args)
+	{
+		if(method_exists(static::class, $method))
+		{
+			static::init();
+			return call_user_func(array(static::class, $method), $args);
+		}
+	}
+
+	static function init()
+	{
+		if(!defined("PHP_WINDOWS_VERSION_BUILD"))
+		{
+			static::$facilities[LOG_LOCAL0] = 'log_local0';
+			static::$facilities[LOG_LOCAL1] = 'log_local1';
+			static::$facilities[LOG_LOCAL2] = 'log_local2';
+			static::$facilities[LOG_LOCAL3] = 'log_local3';
+			static::$facilities[LOG_LOCAL4] = 'log_local4';
+			static::$facilities[LOG_LOCAL5] = 'log_local5';
+			static::$facilities[LOG_LOCAL6] = 'log_local6';
+			static::$facilities[LOG_LOCAL7] = 'log_local7';
+		}
+	}
+
 	/**
-	 * @param $facility
+	 * @param      $facility
+	 *
+	 * @param bool $validate_os_facilities
 	 *
 	 * @return bool
 	 * @throws InvalidFacilityException
 	 */
-	static function isFacilityValid($facility)
+	static function isFacilityValid($facility, $validate_os_facilities = true)
 	{
 		$valid = false;
 
 		if(isset(static::$facilities[$facility]))
 		{
 			$valid = true;
-			if(defined("PHP_WINDOWS_VERSION_BUILD"))
+			if(defined("PHP_WINDOWS_VERSION_BUILD") && $validate_os_facilities)
 			{
 				if($facility != LOG_USER)
 				{
@@ -55,7 +73,7 @@ final class Facilities{
 			}
 		}
 
-		if (!$valid)
+		if(!$valid)
 		{
 			throw new InvalidFacilityException($facility, static::facilityName($facility));
 		}
@@ -67,7 +85,7 @@ final class Facilities{
 	{
 		$facility = static::$facilities[$facility];
 
-		if (!$facility)
+		if(!$facility)
 		{
 			$facility = "UNKNOWN";
 		}

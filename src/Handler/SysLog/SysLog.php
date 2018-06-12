@@ -8,90 +8,112 @@
 
 namespace ArashDalir\Handler\SysLog;
 
+use ArashDalir\Foundation\LogMessage;
 use ArashDalir\Foundation\Psr3Log;
 
+/**
+ * Class SysLog
+ *
+ * @package ArashDalir\Handler\SysLog
+ * @property SysLogMessage $log_message
+ * @method SysLogMessage getLogMessage()
+ */
 class SysLog extends Psr3Log{
 	protected $address;
 	protected $port;
-	protected $sock;
-	protected $facility;
-	protected $hostname = '';
-
-	function init(){
-		parent::init();
-		static::$log_extra_format = '{$hostname} '. parent::$log_extra_format;
-	}
-
-	public function __construct($addr = null, $port = 514)
-	{
-		parent::__construct();
-		$this->address = $addr;
-		$this->port = $port;
-		$this->sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-	}
+	private $log_connection;
 
 	/**
-	 * @param $facility
+	 * SysLog constructor.
 	 *
-	 * @return $this
+	 * @param null $address
+	 * @param null $port
+	 *
 	 * @throws Exception\InvalidFacilityException
 	 */
-	public function facility($facility)
+	public function __construct($address = null, $port = null)
 	{
-		if($facility < 8)
+		parent::__construct(SysLogMessage::class);
+
+		if($address && is_null($port))
 		{
-			$facility = 0;
+			$port = 514;
 		}
 
-		if (Facilities::isFacilityValid($facility))
-		{
-			$this->facility = $facility;
-		}
+		$this->address = $address;
+		$this->port = $port;
 
-		return $this;
-	}
+		$this->openSocket();
 
-	public function hostname($hostname)
-	{
-		$this->hostname = $hostname;
-		return $this;
+		$this->getLogMessage()
+			->setFacility(LOG_USER);
 	}
 
 	public function __destruct()
 	{
-		if($this->sock)
+		if($this->log_connection)
 		{
-			socket_close($this->sock);
+			if(!$this->address)
+			{
+				closelog();
+			}
+			else
+			{
+				socket_close($this->log_connection);
+			}
+		}
+
+	}
+
+	function openSocket()
+	{
+		if($this->address)
+		{
+			$this->log_connection = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
 		}
 	}
 
-	function send($msg, $flags = 0)
+	/**
+	 * @param      $facility
+	 *
+	 * @param bool $os_conform
+	 *
+	 * @return $this
+	 * @throws Exception\InvalidFacilityException
+	 */
+	public function setFacility($facility, $os_conform = true)
 	{
-		return socket_sendto($this->sock, $msg, strlen($msg), $flags, $this->address, $this->port);
+		$this->getLogMessage()
+			->setFacility($facility, $os_conform);
+		return $this;
 	}
 
-	function prepareLevel($level)
+	/**
+	 * @param SysLogMessage $message
+	 * @param int        $flags
+	 *
+	 * @return bool|int|mixed
+	 */
+	function send($message, $flags = 0)
 	{
-		return $this->facility|$this->$level;
-	}
+		$message_string = (string)$message;
 
-	function prepareLogExtra()
-	{
-		$parameters = parent::prepareLogExtra();
-		$parameters["hostname"] = $this->hostname;
-
-		return $parameters;
-	}
-
-	function prepareContext($context)
-	{
-		$context = parent::prepareContext($context);
-
-		if ($context)
+		if($this->address)
 		{
-			$context = "|{$context}";
+			if(!$this->log_connection)
+			{
+				$this->openSocket();
+			}
+			return socket_sendto($this->log_connection, $message_string, strlen($message_string), $flags, $this->address, $this->port);
 		}
+		else
+		{
+			if(!$this->log_connection)
+			{
+				$this->log_connection = openlog(false, LOG_PID|LOG_PERROR|LOG_NDELAY, $message->getFacility());
+			}
 
-		return $context;
+			return syslog($message->asString("level"), $message_string);
+		}
 	}
 }

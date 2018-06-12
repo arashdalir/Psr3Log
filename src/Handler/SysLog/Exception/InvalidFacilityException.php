@@ -6,7 +6,7 @@
  * Time: 17:21
  */
 
-namespace arashdalir\Handler\SysLog\Exception;
+namespace ArashDalir\Handler\SysLog\Exception;
 
 class InvalidFacilityException extends \Exception{
 	function __construct($facility, $name)
@@ -15,7 +15,7 @@ class InvalidFacilityException extends \Exception{
 
 		if (defined("PHP_WINDOWS_VERSION_BUILD"))
 		{
-			$message .= " You are using PHP on \"".PHP_OS."\"! on Windows, only \"LOG_USER (".LOG_USER.")\" is allowed.";
+			$message .= " You are using PHP on \"".PHP_OS."\", only \"LOG_USER (".LOG_USER.")\" is allowed.";
 		}
 		parent::__construct($message);
 	}

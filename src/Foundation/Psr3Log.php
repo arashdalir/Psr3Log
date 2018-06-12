@@ -11,171 +11,77 @@
 namespace ArashDalir\Foundation;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 abstract class Psr3Log implements LoggerInterface, ILog{
-	protected static $log_extra_format;
+	/** @var LogMessage */
+	protected $log_message = null;
 
-	public static $formats = array();
-
-	protected $appname = '';
-	protected $procid = '';
-	protected $msgid = '';
-	protected $format = null;
-	protected $autoMsgId = false;
-
-	function init(){
-		static::$log_extra_format = '{$appname} {$procid} {$msgid}';
-		static::$formats = array(
-			"default" => '<{$level}>{$timestamp} {$log_extra} {$message} {$context}',
-		);
-	}
-	public function __construct()
+	/**
+	 * Psr3Log constructor.
+	 *
+	 * @param string $log_message_type
+	 */
+	public function __construct($log_message_type)
 	{
-		$this->init();
-		$this->format(static::$formats["default"]);
+		$this->log_message = new $log_message_type();
 	}
 
 	/**
-	 *
-	 * @param null|int $begin -- if null, autoMsgId is deactivated, otherwise, the integer is used as base for automatic message ID counter
+	 * @return LogMessage
 	 */
-	function autoMsgId($begin = null)
-	{
-		$this->autoMsgId = $begin;
-	}
-
-	function format($format)
-	{
-		$this->format = $format;
-	}
-
-	public function appname($appname)
-	{
-		$this->appname = $appname;
-		return $this;
-	}
-
-	public function procid($procid)
-	{
-		$this->procid = $procid;
-		return $this;
-	}
-
-	public function msgid($msgid)
-	{
-		$this->msgid = $msgid;
-		return $this;
+	public function getLogMessage(){
+		return $this->log_message;
 	}
 
 	public function log($level, $message, array $context = array())
 	{
-		$params = $this->prepareLogExtra();
-		$log_extra = $this->prepareMessage(static::$log_extra_format, $params);
-
-		$prival = $this->prepareLevel($level);
-		$timestamp = $this->prepareTimestamp(time());
-
-		$msg = $this->prepareMessage(
-			$this->format,
-			array(
-				"level" => $prival,
-				"timestamp" => $timestamp,
-				"log_extra" => $log_extra,
-				"message" => $message,
-				"context" => $this->prepareContext($context),
-			)
-		);
-
-		$this->send($msg);
+		$log_message = clone $this->log_message;
+		$log_message
+			->setTimestamp()
+			->setLevel($level)
+			->setMessage($message)
+			->setContext($context);
+		$this->send($log_message);
 	}
 
 	public function emergency($message, array $context = array())
 	{
-		$this->log(LOG_EMERG, $message, $context);
+		$this->log(LogLevel::EMERGENCY, $message, $context);
 	}
 
 	public function alert($message, array $context = array())
 	{
-		$this->log(LOG_ALERT, $message, $context);
+		$this->log(LogLevel::ALERT, $message, $context);
 	}
 
 	public function critical($message, array $context = array())
 	{
-		$this->log(LOG_EMERG, $message, $context);
+		$this->log(LogLevel::CRITICAL, $message, $context);
 	}
 
 	public function error($message, array $context = array())
 	{
-		$this->log(LOG_ERR, $message, $context);
+		$this->log(LogLevel::ERROR, $message, $context);
 	}
 
 	public function warning($message, array $context = array())
 	{
-		$this->log(LOG_WARNING, $message, $context);
+		$this->log(LogLevel::WARNING, $message, $context);
 	}
 
 	public function notice($message, array $context = array())
 	{
-		$this->log(LOG_NOTICE, $message, $context);
+		$this->log(LogLevel::NOTICE, $message, $context);
 	}
 
 	public function info($message, array $context = array())
 	{
-		$this->log(LOG_INFO, $message, $context);
+		$this->log(LogLevel::INFO, $message, $context);
 	}
 
 	public function debug($message, array $context = array())
 	{
-		$this->log(LOG_DEBUG, $message, $context);
-	}
-
-	protected function prepareMessage($format, $params, $remove_spaces = false)
-	{
-		extract($params);
-		$message = eval("return \"$format\";");
-
-		if ($remove_spaces)
-		{
-			$message = preg_replace("/(\s{2,})/", " ", $message);
-		}
-		return trim($message);
-	}
-
-	function prepareContext($context)
-	{
-		if ($context)
-		{
-			$context = json_encode($context, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-		}
-		else
-		{
-			$context = "";
-		}
-		return $context;
-	}
-
-	function prepareTimestamp($timestamp)
-	{
-		return date('c', $timestamp);
-	}
-
-	function prepareLevel($level){
-		return $level;
-	}
-
-	function prepareLogExtra()
-	{
-		$msgId = $this->msgid;
-
-		if (!$msgId && !is_null($this->autoMsgId))
-		{
-			$msgId = $this->autoMsgId++;
-		}
-
-		return array(
-			"appname" => $this->appname,
-			"procid" => $this->procid,
-			"msgid" => $msgId,
-		);
+		$this->log(LogLevel::DEBUG, $message, $context);
 	}
 }
