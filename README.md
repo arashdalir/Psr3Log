@@ -23,13 +23,13 @@ Or add following line to your composer.json:
 ## Usage
 Currently, there is only one realization of Psr3Log Handlers for SysLog over UDP format and local SysLog.
 
-## Local SysLog:
+### Local SysLog:
 By not defining an address when creating an object, the object tries to write the values in local syslog.
 
-## UDP-Based SysLog Client
+### UDP-Based SysLog Client:
 The constructor function accepts an IP-Address and a port where the syslog server is, and will send logs to the remote server.
 
-### Usage on Windows:
+#### Usage on Windows:
 Please note that on Windows [only LOG_USER facility is allowed](http://php.net/manual/en/function.openlog.php). Using other facilities will throw an Exception of type `ArashDalir\Handler\SysLog\InvalidFacilityException`, if the second parameter for `setFacility($facility, $os_form)` is set to true.
 
 ```php
@@ -38,7 +38,7 @@ include 'vendor/autoload.php';
 
 $udp = new ArashDalir\Handler\SysLog\SysLog('127.0.0.1');
 $udp->getLogMessage()->setFacility(LOG_AUTH, false)
-    ->setHostname('ada.gemik')
+    ->setHostname('ada')
     ->setProcessId(8848)
     ->setMessageId('demo')
     ->setAppName('php');
@@ -50,7 +50,7 @@ $udp->emergency('UDP SysLog Emergency Test');
 
 $local = new \ArashDalir\Handler\SysLog\SysLog();
 $local->getLogMessage()->setFacility(LOG_USER)
-	->setHostname('ada.gemik')
+	->setHostname('ada')
 	->setProcessId(8848)
 	->setMessageId('demo')
 	->setAppName('php');

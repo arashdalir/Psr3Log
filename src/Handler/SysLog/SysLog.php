@@ -8,7 +8,6 @@
 
 namespace ArashDalir\Handler\SysLog;
 
-use ArashDalir\Foundation\LogMessage;
 use ArashDalir\Foundation\Psr3Log;
 
 /**
@@ -90,7 +89,7 @@ class SysLog extends Psr3Log{
 
 	/**
 	 * @param SysLogMessage $message
-	 * @param int        $flags
+	 * @param int           $flags
 	 *
 	 * @return bool|int|mixed
 	 */
@@ -108,9 +107,14 @@ class SysLog extends Psr3Log{
 		}
 		else
 		{
+			$cur_format = $message->getFormat();
+			$message->setFormat(SysLogFormats::FORMAT_LOCAL_SYSLOG);
+			$message_string = stripslashes((string)$message);
+			$message->setFormat($cur_format);
+
 			if(!$this->log_connection)
 			{
-				$this->log_connection = openlog(false, LOG_PID|LOG_PERROR|LOG_NDELAY, $message->getFacility());
+				$this->log_connection = openlog(false, LOG_PID|LOG_PERROR|LOG_NDELAY, $message->getFacility(true));
 			}
 
 			return syslog($message->asString("level"), $message_string);

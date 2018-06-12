@@ -19,7 +19,6 @@ abstract class LogMessage implements ILogMessage{
 	protected $timestamp;
 	protected $format;
 
-
 	function __construct()
 	{
 		$this->process_id = getmypid();
@@ -199,6 +198,25 @@ abstract class LogMessage implements ILogMessage{
 	public function getFormat()
 	{
 		return $this->format;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getVersion()
+	{
+		return $this->version;
+	}
+
+	/**
+	 * @param mixed $version
+	 *
+	 * @return LogMessage
+	 */
+	public function setVersion($version)
+	{
+		$this->version = $version;
+		return $this;
 	}
 
 	function asString($property)

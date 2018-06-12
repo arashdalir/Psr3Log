@@ -2,9 +2,9 @@
 include 'vendor/autoload.php';
 
 $udp = new ArashDalir\Handler\SysLog\SysLog('127.0.0.1');
-$udp->getLogMessage()->setFacility(LOG_AUTH, false)
-    ->setHostname('ada.gemik')
-    ->setProcessId(8848)
+$udp->getLogMessage()->setFacility(LOG_USER, false)
+    ->setHostname('ada')
+    ->setProcessId(1234)
     ->setMessageId('demo')
     ->setAppName('php');
 
@@ -15,8 +15,8 @@ $udp->emergency('UDP SysLog Emergency Test');
 
 $local = new \ArashDalir\Handler\SysLog\SysLog();
 $local->getLogMessage()->setFacility(LOG_USER)
-	->setHostname('ada.gemik')
-	->setProcessId(8848)
+	->setHostname('ada')
+	->setProcessId(1234)
 	->setMessageId('demo')
 	->setAppName('php');
 
