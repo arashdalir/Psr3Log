@@ -21,14 +21,16 @@ Or add following line to your composer.json:
 }
 ```
 ## Usage
-Currently, there is only one realization of Psr3Log Handlers for SysLog over UDP format.
+Currently, there is only one realization of Psr3Log Handlers for SysLog over UDP format and local SysLog.
 
+## Local SysLog:
+By not defining an address when creating an object, the object tries to write the values in local syslog.
+
+## UDP-Based SysLog Client
+The constructor function accepts an IP-Address and a port where the syslog server is, and will send logs to the remote server.
 
 ### Usage on Windows:
 Please note that on Windows [only LOG_USER facility is allowed](http://php.net/manual/en/function.openlog.php). Using other facilities will throw an Exception of type `ArashDalir\Handler\SysLog\InvalidFacilityException`, if the second parameter for `setFacility($facility, $os_form)` is set to true.
-
-### Local SysLog:
-but not defining an address when creating an object, the object tries to write the values in local syslog.
 
 ```php
 <?php
