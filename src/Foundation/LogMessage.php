@@ -12,7 +12,7 @@ abstract class LogMessage implements ILogMessage{
 	protected $app_name;
 	protected $message_id;
 	protected $process_id;
-	protected $auto_message_id;
+	protected static $auto_message_id;
 	protected $message;
 	protected $level;
 	protected $context;
@@ -86,7 +86,7 @@ abstract class LogMessage implements ILogMessage{
 	 */
 	public function getAutoMessageId()
 	{
-		return $this->auto_message_id;
+		return $this::$auto_message_id;
 	}
 
 	/**
@@ -96,7 +96,7 @@ abstract class LogMessage implements ILogMessage{
 	 */
 	public function setAutoMessageId($auto_message_id)
 	{
-		$this->auto_message_id = $auto_message_id;
+		$this::$auto_message_id = $auto_message_id;
 		return $this;
 	}
 
@@ -199,25 +199,6 @@ abstract class LogMessage implements ILogMessage{
 		return $this->format;
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function getVersion()
-	{
-		return $this->version;
-	}
-
-	/**
-	 * @param mixed $version
-	 *
-	 * @return LogMessage
-	 */
-	public function setVersion($version)
-	{
-		$this->version = $version;
-		return $this;
-	}
-
 	function asString($property)
 	{
 		$value = null;
@@ -246,9 +227,9 @@ abstract class LogMessage implements ILogMessage{
 			case "message_id":
 				$value = $this->message_id;
 
-				if(!$value && !is_null($this->auto_message_id))
+				if(!$value && !is_null($this::$auto_message_id))
 				{
-					$value = $this->auto_message_id++;
+					$value = $this::$auto_message_id++;
 				}
 				break;
 			}
