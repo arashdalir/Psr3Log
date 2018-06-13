@@ -34,11 +34,11 @@ abstract class Psr3Log implements LoggerInterface, ILog{
 		return $this->log_message;
 	}
 
-	public function log($level, $message, array $context = array())
+	public function log($level, $message, array $context = array(), $timestamp = null)
 	{
 		$log_message = clone $this->log_message;
 		$log_message
-			->setTimestamp()
+			->setTimestamp($timestamp)
 			->setLevel($level)
 			->setMessage($message)
 			->setContext($context);

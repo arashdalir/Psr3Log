@@ -3,6 +3,7 @@ include 'vendor/autoload.php';
 
 $udp = new ArashDalir\Handler\SysLog\SysLog('127.0.0.1');
 $udp->getLogMessage()->setFacility(LOG_USER, false)
+	->setVersion(\ArashDalir\Handler\SysLog\SysLogMessage::VERSION_1) // available as of V1.1.0
     ->setHostname('ada')
     ->setProcessId(1234)
     ->setMessageId('demo')

@@ -38,6 +38,7 @@ include 'vendor/autoload.php';
 
 $udp = new ArashDalir\Handler\SysLog\SysLog('127.0.0.1');
 $udp->getLogMessage()->setFacility(LOG_AUTH, false)
+    ->setVersion(\ArashDalir\Handler\SysLog\SysLogMessage::VERSION_1) // available as of V1.1.0
     ->setHostname('ada')
     ->setProcessId(8848)
     ->setMessageId('demo')
@@ -50,10 +51,10 @@ $udp->emergency('UDP SysLog Emergency Test');
 
 $local = new \ArashDalir\Handler\SysLog\SysLog();
 $local->getLogMessage()->setFacility(LOG_USER)
-	->setHostname('ada')
-	->setProcessId(8848)
-	->setMessageId('demo')
-	->setAppName('php');
+    ->setHostname('ada')
+    ->setProcessId(8848)
+    ->setMessageId('demo')
+    ->setAppName('php');
 
 $local->error('Local SysLog Error Test');
 $local->info('Local SysLog Info Test');
@@ -62,4 +63,17 @@ $local->emergency('Local SysLog Emergency Test');
 ```
 
 ## Status
-SysLog extends Udplog, which implements PSR3, so the API is stable. As Udplog, Psr3Log doesn't support [STRUCTURED-DATA](https://tools.ietf.org/html/rfc5424#section-6.3). It will be added if [lvht\updlog](https://github.com/lvht/udplog) implements this feature.
+Psr3Log extends Udplog. It provides a PSR-3 conform implementation of a logger. As Udplog, Psr3Log doesn't support [STRUCTURED-DATA](https://tools.ietf.org/html/rfc5424#section-6.3). Hopefully the future releases will cover this up...
+
+## Versions
+
+### v1.1.0:
+ * added support for [RFC5424 (syslog V1)](https://tools.ietf.org/html/rfc5424)
+ * message timestamp can be set manually if psr3log->log function is used directly - mainly implemented for extension purposes, so that log messages from other loggers can be fed into this library.
+ 
+
+### v1.0.0:
+first stable release - following features implemented
+ * local syslog entries
+ * udp-based syslog client
+ * based on [RFC3164 (syslog V0)](https://www.ietf.org/rfc/rfc3164.txt)

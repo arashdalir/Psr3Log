@@ -172,14 +172,13 @@ abstract class LogMessage implements ILogMessage{
 	 */
 	public function setTimestamp($timestamp = null)
 	{
-		if (!$timestamp)
+		if(!$timestamp)
 		{
 			$timestamp = microtime(true);
 		}
 		$this->timestamp = $timestamp;
 		return $this;
 	}
-
 
 	/**
 	 * @param mixed $format
@@ -223,7 +222,7 @@ abstract class LogMessage implements ILogMessage{
 	{
 		$value = null;
 
-		if (property_exists(static::class, $property))
+		if(property_exists(static::class, $property))
 		{
 			$value = $this->$property;
 
@@ -260,10 +259,11 @@ abstract class LogMessage implements ILogMessage{
 
 	abstract function __toString();
 
-	function format($format){
+	function format($format)
+	{
 		$variables = get_object_vars($this);
 
-		foreach ($variables as $property => &$variable)
+		foreach($variables as $property => &$variable)
 		{
 			$variable = $this->asString($property);
 		}
